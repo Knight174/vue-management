@@ -15,7 +15,7 @@ module.exports = {
       {
         semi: false, // 不使用分号
         singleQuote: true, // 全部使用单引号
-        printWidth: 160 // 标签太长时换行
+        printWidth: 120 // 标签太长时换行
       }
     ]
   }
