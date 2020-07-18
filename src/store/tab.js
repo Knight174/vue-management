@@ -1,5 +1,6 @@
 export default {
   state: {
+    isCollapse: false,
     menu: [],
     currentMenu: {},
     tabsList: [
@@ -32,6 +33,9 @@ export default {
       let resIndex = state.tabsList.indexOf(val)
       // 删除这个位置的数据
       state.tabsList.splice(resIndex, 1)
+    },
+    collapseMenu(state) {
+      state.isCollapse = !state.isCollapse
     }
   },
   actions: {}

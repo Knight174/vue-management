@@ -1,6 +1,7 @@
 <template>
   <!-- 侧边栏最外层 -->
   <el-menu
+    :collapse="isCollapse"
     default-active="2"
     class="el-menu-vertical-demo"
     background-color="#545c64"
@@ -88,10 +89,16 @@ export default {
     },
     hasChildren() {
       return this.asideMenu.filter(item => item.children)
+    },
+    isCollapse() {
+      return this.$store.state.tab.isCollapse
     }
   },
   methods: {
     clickMenu(item) {
+      this.$router.push({
+        name: item.name
+      })
       this.$store.commit('selectMenu', item)
     }
   }
@@ -102,5 +109,9 @@ export default {
 .el-menu {
   height: 100%;
   border: none;
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
 }
 </style>

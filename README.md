@@ -731,3 +731,231 @@ state.tabsList.splice(resIndex, 1)
 
 ------
 
+# 七、页面互联
+
+点击侧边栏菜单或者 tag 实现路由的跳转，显示页面。
+
+## 1. 路由规则配置
+
+```js
+// src
+| views
+|	|--- Home
+|		|--- Home.vue
+|	|--- VideoManagement
+|		|--- VideoManagement.vue
+|	|--- User
+|		|--- UserManagement.vue
+|	|--- Others
+|		|--- PageOne.vue
+|		|--- PageTwo.vue
+```
+
+```js
+// router/index.js
+const routes = [
+  {
+    path: '/',
+    component: () => import('@/views/Main'),
+    children: [
+      {
+        path: '/',
+        name: 'home',
+        component: () => import('@/views/Home/Home')
+      },
+      {
+        path: '/video',
+        name: 'video',
+        component: () => import('@/views/VideoManagement/VideoManagement')
+      },
+      {
+        path: '/user',
+        name: 'user',
+        component: () => import('@/views/UserManagement/UserManagement')
+      },
+      {
+        path: '/page1',
+        name: 'page1',
+        component: () => import('@/views/Others/PageOne')
+      },
+      {
+        path: '/page2',
+        name: 'page2',
+        component: () => import('@/views/Others/PageTwo')
+      }
+    ]
+  }
+]
+```
+
+```html
+<!-- Main.vue -->
+<el-container style="height:100%">
+  <el-aside width="auto">
+    <common-aside></common-aside>
+  </el-aside>
+  <el-container>
+    <el-header>
+      <common-header></common-header>
+    </el-header>
+    <common-tab></common-tab>
+    <el-main>
+      <!-- 一个嵌套路由，负责内容展示 -->
+      <router-view></router-view>
+    </el-main>
+  </el-container>
+</el-container>
+```
+
+
+
+## 2. 页面跳转
+
+使用编程式导航：`this.$router.push({...})`
+
+```js
+// common-aside.vue 侧边栏的跳转
+methods: {
+  clickMenu(item) {
+    this.$router.push({
+      name: item.name
+    })
+    this.$store.commit('selectMenu', item)
+  }
+}
+
+// common-tab.vue tag栏的跳转
+ methods: {
+   // ...
+   changeMenu(item) {
+     this.$store.commit('selectMenu', item)
+     this.$router.push({
+       name: item.name
+     })
+   }
+ }
+```
+
+
+
+## 3. 样式优化
+
+(1) 当前页面的 tag 显示深色样式
+
+![image-20200718191105646](C:\Users\42530\AppData\Roaming\Typora\typora-user-images\image-20200718191105646.png)
+
+给`el-tag` 添加属性：
+
+```js
+:effect="$route.name === tag.name ? 'dark' : 'plain'"
+```
+
+**$route.name**表示当前路由的 name 选项。
+
+
+
+(2) 点击 header 部分的合并按钮实现折叠
+
+![image-20200718191151995](C:\Users\42530\AppData\Roaming\Typora\typora-user-images\image-20200718191151995.png)
+
+![image-20200718191218210](C:\Users\42530\AppData\Roaming\Typora\typora-user-images\image-20200718191218210.png)
+
+
+
+给`el-menu`添加 collapse 属性，通过布尔值控制是否折叠。
+
+https://element.eleme.cn/2.13/#/zh-CN/component/menu#menu-attribute
+
+```js
+// store/index.js
+export default {
+  state: {
+    isCollapse: false, // 控制折叠
+    menu: [],
+    currentMenu: {},
+    tabsList: [
+      {
+        path: '/',
+        label: '首页',
+        name: 'home',
+        icon: 's-home'
+      }
+    ]
+  },
+  mutations: {
+    selectMenu(state, val) {
+      if (val.name !== 'home') {
+        state.currentMenu = val
+        // 将数据更新到tabsList
+        state.tabsList.push(val)
+        state.tabsList = Array.from(new Set(state.tabsList)) // 添加进数组后，进行数组去重
+      } else {
+        state.currentMenu = {}
+      }
+      // state.currentMenu = val.name !== 'home' ? val : {}
+    },
+    closeTab(state, val) {
+      // 通过数组的findIndex方法找到出现的第一个需要的数据，
+      // 这个需要的数据是：判断tabsList中的数组项的name和传递过来数据的name是否相同，
+      // 相同时证明找到了对应数据的index，把它返回给resIndex
+      // let resIndex = state.tabsList.findIndex(item => item.name === val.name)
+      // 简单方法 indexOf()
+      let resIndex = state.tabsList.indexOf(val)
+      // 删除这个位置的数据
+      state.tabsList.splice(resIndex, 1)
+    },
+    // 控制折叠的布尔值
+    collapseMenu(state) {
+      state.isCollapse = !state.isCollapse
+    }
+  },
+  actions: {}
+}
+```
+
+将数据传到 header 组件，点击该组件上的**合并按钮**改变公有数据中的 isCollapse 值，然后绑定到 aside 组件的 `el-menu` 上，响应它的变化。
+
+* common-header
+
+```html
+<!-- common-header 第6行 -->
+<el-button type="primary" icon="el-icon-menu" size="mini" @click="collapseMenu"></el-button>
+```
+
+```js
+methods: {
+  collapseMenu() {
+    this.$store.commit('collapseMenu')
+  }
+}
+```
+
+* common-aside
+
+```html
+<!-- 第二行绑定属性collapse -->
+<el-menu
+  :collapse="isCollapse"
+  class="el-menu-vertical-demo"
+  background-color="#545c64"
+  text-color="#fff"
+  active-text-color="#ffd04b"
+>
+```
+
+```js
+computed: {
+  noChildren() {
+    return this.asideMenu.filter(item => !item.children)
+  },
+  hasChildren() {
+    return this.asideMenu.filter(item => item.children)
+  },
+  isCollapse() { // 计算公有数据isCollapse
+    return this.$store.state.tab.isCollapse
+  }
+}
+```
+
+------
+

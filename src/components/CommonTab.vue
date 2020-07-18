@@ -6,6 +6,8 @@
       :closable="tag.name !== 'home'"
       :disable-transitions="false"
       @close="close(tag)"
+      @click="changeMenu(tag)"
+      :effect="$route.name === tag.name ? 'dark' : 'plain'"
     >
       {{ tag.label }}
     </el-tag>
@@ -25,7 +27,13 @@ export default {
   methods: {
     ...mapMutations({
       close: 'closeTab'
-    })
+    }),
+    changeMenu(item) {
+      this.$store.commit('selectMenu', item)
+      this.$router.push({
+        name: item.name
+      })
+    }
   }
 }
 </script>
@@ -33,20 +41,9 @@ export default {
 <style lang="scss" scoped>
 .tabs {
   padding: 1.25rem;
-  .el-tag + .el-tag {
+  .el-tag {
     margin-left: 10px;
-  }
-  .button-new-tag {
-    margin-left: 10px;
-    height: 32px;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
+    cursor: pointer;
   }
 }
 </style>

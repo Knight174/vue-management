@@ -1,6 +1,6 @@
 <template>
   <el-container style="height:100%">
-    <el-aside width="200px">
+    <el-aside width="auto">
       <common-aside></common-aside>
     </el-aside>
     <el-container>
@@ -8,7 +8,9 @@
         <common-header></common-header>
       </el-header>
       <common-tab></common-tab>
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>

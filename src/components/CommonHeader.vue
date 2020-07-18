@@ -3,7 +3,7 @@
     <!-- 左侧部分 -->
     <div class="left-content">
       <!-- 合并按钮 -->
-      <el-button type="primary" icon="el-icon-menu" size="mini"></el-button>
+      <el-button type="primary" icon="el-icon-menu" size="mini" @click="collapseMenu"></el-button>
       <!-- 面包屑 -->
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>首页</el-breadcrumb-item>
@@ -31,6 +31,7 @@
 
 <script>
 import { mapState } from 'vuex'
+
 export default {
   name: 'commonHeader',
   data() {
@@ -42,6 +43,11 @@ export default {
     ...mapState({
       current: state => state.tab.currentMenu
     })
+  },
+  methods: {
+    collapseMenu() {
+      this.$store.commit('collapseMenu')
+    }
   }
 }
 </script>
