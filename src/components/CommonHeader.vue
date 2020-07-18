@@ -52,18 +52,18 @@ header {
   height: 100%;
   align-items: center;
   justify-content: space-between; // 两边布局
-}
-.left-content {
-  display: flex;
-  align-items: center;
-  .el-button {
-    margin-right: 1.25rem;
+  .left-content {
+    display: flex;
+    align-items: center;
+    .el-button {
+      margin-right: 1.25rem;
+    }
   }
-}
-.right-content {
-  .user {
-    width: 2.5rem;
-    border-radius: 50%;
+  .right-content {
+    .user {
+      width: 2.5rem;
+      border-radius: 50%;
+    }
   }
 }
 .el-dropdown-link {

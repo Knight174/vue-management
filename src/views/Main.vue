@@ -7,6 +7,7 @@
       <el-header>
         <common-header></common-header>
       </el-header>
+      <common-tab></common-tab>
       <el-main>Main</el-main>
     </el-container>
   </el-container>
@@ -15,12 +16,14 @@
 <script>
 import CommonHeader from '../components/CommonHeader'
 import CommonAside from '../components/CommonAside'
+import CommonTab from '../components/CommonTab'
 
 export default {
   name: 'mainPage',
   components: {
     CommonHeader,
-    CommonAside
+    CommonAside,
+    CommonTab
   }
 }
 </script>
