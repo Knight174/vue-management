@@ -957,5 +957,169 @@ computed: {
 }
 ```
 
+
+
+## 4. 动态折叠
+
+在`common-menu`组件内添加以下样式
+
+```scss
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+```
+
 ------
 
+# 八、Mock数据
+
+## 1. axios 的设置
+
+(1) 安装依赖
+
+> npm i axios
+
+(2) axios 实例与拦截器
+
+创建实例：http://axios-js.com/zh-cn/docs/#axios-create-config
+
+拦截器：[http://axios-js.com/zh-cn/docs/#%E6%8B%A6%E6%88%AA%E5%99%A8](http://axios-js.com/zh-cn/docs/#拦截器)
+
+```js
+// src/api/config.js
+import axios from 'axios'
+
+// 创建一个axios实例
+const service = axios.create({
+  timeout: 3000 // 最大延迟时间
+})
+
+// 请求拦截器
+service.interceptors.request.use(
+  config => config,
+  err => {
+    console.log(err)
+  }
+)
+
+// 响应拦截器
+service.interceptors.response.use(
+  response => {
+    let res = {}
+    res.status = response.status
+    res.data = response.data
+    return res
+  },
+  err => console.log(err)
+)
+
+export default service
+```
+
+(3) 引入全局
+
+```js
+// main.js
+import http from '@/api/config'
+Vue.prototype.$http = http
+```
+
+
+
+## 2. mock 的设置
+
+(1) 设置 ajax 延时
+
+```js
+// src/mock/idnex.js
+import Mock from 'mockjs'
+
+// 设置200-2000ms延时
+Mock.setup({
+  timeout: '200-2000'
+})
+```
+
+(2) 设置首页mock数据的回调
+
+```js
+// src/mock/home.js
+import Mock from 'mockjs'
+
+export default {
+  // 回调函数，获取home数据
+  getHomeData: () => {
+    return {
+      code: 200,
+      data: {
+        videoData: [
+          {
+            name: 'SpringBoot',
+            value: Mock.Random.float(1000, 10000, 0, 2)
+          },
+          {
+            name: 'Vue',
+            value: Mock.Random.float(1000, 10000, 0, 2)
+          },
+          {
+            name: '小程序',
+            value: Mock.Random.float(1000, 10000, 0, 2)
+          },
+          {
+            name: 'Es6',
+            value: Mock.Random.float(1000, 10000, 0, 2)
+          },
+          {
+            name: 'Java',
+            value: Mock.Random.float(1000, 10000, 0, 2)
+          },
+          {
+            name: 'Js',
+            value: Mock.Random.float(1000, 10000, 0, 2)
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+(3) 配置 mock 数据 **Mock.mock( rurl, rtype, function( options ) )**
+
+https://github.com/nuysoft/Mock/wiki/Mock.mock()#mockmock-rurl-rtype-function-options--
+
+```js
+// src/mock/idnex.js
+import Mock from 'mockjs'
+import homeApi from './home'
+
+// 设置200-2000ms延时
+Mock.setup({
+  timeout: '200-2000'
+})
+
+// 首页相关的mock数据
+// Mock.mock( rurl, rtype, function( options ) )
+Mock.mock(/\/home\/getData/, 'get', homeApi.getHomeData) // 当拦截到这个url的get请求时，把回调函数中返回的数据给到页面
+```
+
+(4) 引入全局
+
+```js
+// main.js
+// import './mock/index.js'
+import './mock'
+```
+
+(5) Home.vue
+
+```js
+export default {
+  mounted() {
+    this.$http.get('/home/getData').then(res => {
+      console.log(res.data)
+    })
+  }
+}
+```

@@ -2,13 +2,19 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import '@/assets/scss/reset.scss'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 
-Vue.config.productionTip = false
+// 全局配置
+import '@/assets/scss/reset.scss'
+import 'element-ui/lib/theme-chalk/index.css'
+import http from '@/api/config'
+import './mock'
+
+// 第三方包
+import ElementUI from 'element-ui'
 
 Vue.use(ElementUI)
+// 将axios挂载到Vue实例上。
+Vue.prototype.$http = http
 
 new Vue({
   router,
