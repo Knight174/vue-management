@@ -1,0 +1,77 @@
+.home {
+  // 左侧
+  .user {
+    display: flex;
+    align-items: center;
+    border-bottom: .0625rem solid #ccc;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+    }
+    &-info {
+      .name {
+        font-size: 2rem;
+        margin-bottom: .625rem;
+      }
+      .access {
+        color: #ccc
+      }
+    }
+  }
+  .login-info {
+    p {
+      line-height: 1.75rem;
+      font-size: .875rem;
+      color: #999;
+      span {
+        color: #666;
+        margin-left: 3.75rem;
+      }
+    }
+  }
+
+  // 右侧
+  .num {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; // 必要时拆行
+    .el-card {
+      width: 32%;
+      margin-bottom: 1.25rem;
+      .icon {
+        font-size: 1.875rem;
+        width: 5rem;
+        height: 5rem;
+        line-height: 5rem;
+        text-align: center;
+        color: #fff;
+      }
+      .detail {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        margin-left: 1.25rem;
+        .num {
+          font-size: 1.875rem;
+          margin-bottom: .625rem;
+        }
+        .txt {
+          font-size: .875rem;
+          text-align: center;
+          color: #999;
+        }
+      }
+    }
+  }
+  .graph {
+    display: flex;
+    margin-top: 1.25rem;
+    justify-content: space-between;
+    .el-card {
+      width: 48%;
+    }
+  }
+}
